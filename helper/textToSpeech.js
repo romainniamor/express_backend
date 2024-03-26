@@ -13,7 +13,7 @@ export const textToSpeech = (text) => {
   return voice
     .textToSpeech({
       // Required Parameters
-      fileName: "data/audio.mp3",
+      fileName: ".vercel/output/static/audio/audio.mp3",
       textInput: `${text}`,
     })
 
