@@ -4,6 +4,8 @@ import { fakeData } from "../data/initMessage.js";
 import { success } from "../helper/success.js";
 import OpenAI from "openai";
 import { prompt } from "../enums/prompt.js";
+import { textToSpeech } from "../helper/textToSpeech.js";
+import { audioFileToBase64 } from "../helper/audioFile.js";
 
 dotenv.config();
 const router = express.Router();
@@ -53,7 +55,13 @@ router.post("/japan-class/message", async (req, res) => {
       return res.status(500).json({ error: "Unable to translate message" });
     }
     let messages = JSON.parse(completion.choices[0].message.content);
-    res.send(messages);
+
+    const messageToSpeech = messages.japanese;
+
+    const audioFilePath = await textToSpeech(messageToSpeech);
+    const audio = await audioFileToBase64(audioFilePath);
+
+    res.send({ messages, audio });
   } catch (error) {
     res.status(500).json({ error: "OPENAI API ERROR" });
   }
